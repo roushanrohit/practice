@@ -91,8 +91,11 @@ public class CustomHashMap<K,V> {
             if(head.key.equals(key)){
                 size--;
                 loadFactor = (double) size/numBuckets;
-                if(prev == null) buckets.set(bucketIndex, head.nextNode);
-                else prev.nextNode = head.nextNode;
+                if(prev == null) {
+                    buckets.set(bucketIndex, head.nextNode);
+                } else {
+                    prev.nextNode = head.nextNode;
+                }
                 return head.value;
             }
             prev = head;

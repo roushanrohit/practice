@@ -42,6 +42,81 @@ public class HashMapUse {
         for(Pair p : indicesOfPairsThatDifferByK){
             System.out.println(arr4[p.element1] + " " + arr4[p.element2]);
         }
+
+        int[] arr6 = {9,1,8,6,3,4,2,7,10,11,15};
+        List<Integer> longestConsecutiveSubsequence = longestConsecutiveSubsequence(arr6);
+        System.out.println("Printing the longest consecutive subsequence: ");
+        for(int num : longestConsecutiveSubsequence) System.out.print(num + " ");
+        System.out.println();
+    }
+
+    /*
+        Longest Consecutive Subsequence Problem
+        <!-- Approach 2 -->
+        1. put all elements in a hashset
+        2. initialize an arraylist 'ans' of size 0
+        3. loop through the array
+           if hashset does not contain num-1, search for consecutive elements in the
+           hashset, add all of them in an arraylist 'temp'
+           if the size exceeds the size of ans, temp is the new ans
+        4. return ans
+         */
+    private static List<Integer> longestConsecutiveSubsequence2(int[] arr) {
+
+        List<Integer> longestConsecutiveSubsequence = new ArrayList<>();
+        Set<Integer> hset = new HashSet<>();
+        for(int num: arr) hset.add(num);
+
+        for(int num : arr){
+            if(!hset.contains(num - 1)){
+
+                List<Integer> tempConsecutiveSubsequence = new ArrayList<>();
+                tempConsecutiveSubsequence.add(num);
+                int j = 1;
+                while (hset.contains(num + j)){
+                    tempConsecutiveSubsequence.add(num + j);
+                    j++;
+                }
+
+                if(tempConsecutiveSubsequence.size() > longestConsecutiveSubsequence.size()){
+                    longestConsecutiveSubsequence = tempConsecutiveSubsequence;
+                }
+            }
+        }
+
+        return longestConsecutiveSubsequence;
+    }
+
+    /*
+        Longest Consecutive Subsequence Problem
+        arr = {9,1,8,6,3,4,2,7,10,15};
+        <!-- Approach 1 -->
+        1. sort the array: 1,2,3,4,6,7,8,9,10,15
+        2. consecutive subsequences are:
+           1,2,3,4
+           6,7,8,9,10
+           15
+        3. longest consecutive subsequence: 6,7,8,9,10
+         */
+    private static List<Integer> longestConsecutiveSubsequence(int[] arr) {
+        Arrays.sort(arr);
+        List<Integer> longestConsecutiveSubsequence = new ArrayList<>();
+
+        for(int i = 0; i < arr.length; i++){
+
+            List<Integer> tempConsecutiveSubsequence = new ArrayList<>();
+            tempConsecutiveSubsequence.add(arr[i]);
+            while (i < arr.length - 1 && arr[i] + 1 == arr[i+1]){
+                tempConsecutiveSubsequence.add(arr[i+1]);
+                i++;
+            }
+
+            if(tempConsecutiveSubsequence.size() > longestConsecutiveSubsequence.size()){
+                longestConsecutiveSubsequence = tempConsecutiveSubsequence;
+            }
+        }
+
+        return longestConsecutiveSubsequence;
     }
 
     private static List<Pair> pairsWithDiffK(int[] arr, int k) {
