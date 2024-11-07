@@ -48,6 +48,46 @@ public class HashMapUse {
         System.out.println("Printing the longest consecutive subsequence: ");
         for(int num : longestConsecutiveSubsequence) System.out.print(num + " ");
         System.out.println();
+
+        int[] arr7 = {6,3,-1,2,-4,3,1,-2,20};
+        Pair pair = longestSubsetWithZeroSum(arr7);
+        System.out.println("Printing the longest subset with zero sum: ");
+        if(pair.element1 != -1) {
+            for (int i = pair.element1; i <= pair.element2; i++) {
+                System.out.print(arr7[i] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    private static Pair longestSubsetWithZeroSum(int[] arr) {
+
+        Map<Integer, Integer> hmap = new HashMap<>();
+        int startIndex = -1;
+        int endIndex = -1;
+        int sum = 0;
+        int length = 0;
+
+        for(int i = 0; i < arr.length; i++){
+            sum += arr[i];
+            if(sum == 0) {
+                startIndex = 0;
+                endIndex = i;
+                length = startIndex - endIndex + 1;
+            } else if(hmap.containsKey(sum)) {
+
+                // we've found a new subsequence with sum 0
+                if((i - hmap.get(sum)) > length){
+                    startIndex = hmap.get(sum) + 1;
+                    endIndex = i;
+                    length = startIndex - endIndex + 1;
+                }
+            } else {
+                hmap.put(sum, i);
+            }
+        }
+
+        return new Pair(startIndex, endIndex);
     }
 
     /*
