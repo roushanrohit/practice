@@ -6,7 +6,7 @@ import java.util.List;
 public class CustomHashMap<K,V> {
     private static final double STD_LOAD_FACTOR = 0.7;
     private int size = 0;
-    private int numBuckets = 20;
+    private int numBuckets = 5;
     private List<LinkedListNode<K, V>> buckets;
     private double loadFactor = 0;
 
@@ -29,7 +29,7 @@ public class CustomHashMap<K,V> {
             overridden the hashcode method
          */
         int hashCode = key.hashCode();
-        return hashCode % numBuckets;
+        return hashCode % numBuckets; // compression function
     }
 
     public int size() {
@@ -61,7 +61,7 @@ public class CustomHashMap<K,V> {
             newNode.nextNode = head;
             buckets.set(bucketIndex, newNode);
             size++;
-            loadFactor = (double) numBuckets /size;
+            loadFactor = (double) size/numBuckets;
         }
     }
 
@@ -90,7 +90,7 @@ public class CustomHashMap<K,V> {
         while (head != null){
             if(head.key.equals(key)){
                 size--;
-                loadFactor = (double) numBuckets /size;
+                loadFactor = (double) size/numBuckets;
                 if(prev == null) buckets.set(bucketIndex, head.nextNode);
                 else prev.nextNode = head.nextNode;
                 return head.value;
