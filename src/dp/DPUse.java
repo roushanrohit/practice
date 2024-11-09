@@ -15,9 +15,38 @@ public class DPUse {
         System.out.println("Time taken: " + (endTime.getTime() - startTime.getTime()));
 
         int x = 1000;
-        System.out.println("Minimum steps to reach 1: " + minStepsTo1Memoization(x));
+        System.out.println("Minimum steps to reach 1: " + minStepsTo1Dp(x));
 
+        int noOfStairs = 10;
+        System.out.println("Number of ways to climb the stairs: " + staircaseDp(noOfStairs));
 
+    }
+
+    private static int staircaseDp(int n) {
+
+        // edge cases
+        if(n == 0 || n == 1) return 1;
+        if(n == 2) return 2;
+
+        int[] storage = new int[n + 1];
+        storage[0] = 1;
+        storage[1] = 1;
+        storage[2] = 2;
+
+        for(int i = 3; i <= n; i++){
+            storage[i] = storage[i-1] + storage[i-2] + storage[i-3];
+        }
+
+        return storage[n];
+    }
+
+    private static int staircase(int n) {
+
+        // base cases
+        if(n == 1 || n == 2) return n;
+        if(n == 3) return 4;
+
+        return staircase(n - 1) + staircase(n - 2) + staircase(n - 3);
     }
 
     private static int minStepsTo1Dp(int x) {
