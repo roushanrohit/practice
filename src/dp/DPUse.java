@@ -23,7 +23,7 @@ public class DPUse {
         int y = 26;
         System.out.println("Minimum squares needed to represent " + y + " : " + countMinimumSquaresDp(y));
 
-        int z = 40;
+        int z = 15;
         System.out.println("Number of Balanced Binary Trees with height " + z + " : " + noOfBalancedBinaryTreesDp(z));
     }
 
