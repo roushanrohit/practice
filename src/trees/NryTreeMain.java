@@ -72,7 +72,7 @@ public class NryTreeMain {
 
         // node having sum of children and itself maximum
         System.out.println("Node having sum of children and itself maximum: "
-                + findNodeHavingSumOfChildrenAndItselfMaximumBetterApproach(nryTreeRootLvlWise).nodeData);
+                + findNodeHavingSumOfChildrenAndItselfMaximumBetterApproach(nryTreeRootLvlWise).element1);
 
         // structurally identical trees
 //        trees.NryTreeNode<Integer> nryTreeRootLvlWise2  = createNryTreeLvlWise(s);
@@ -120,8 +120,8 @@ public class NryTreeMain {
 
         for(int i = 0; i < nryTreeRootLvlWise.children.size(); i++){
             Pair childNodeWithMaxSum = findNodeHavingSumOfChildrenAndItselfMaximumBetterApproach(nryTreeRootLvlWise.children.get(i));
-            int childNodeData = childNodeWithMaxSum.nodeData;
-            int childSumData = childNodeWithMaxSum.sumData;
+            int childNodeData = childNodeWithMaxSum.element1;
+            int childSumData = childNodeWithMaxSum.element2;
             if(childSumData > sumData) {
                 nodeData = childNodeData;
                 sumData = childSumData;

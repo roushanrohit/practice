@@ -43,6 +43,150 @@ public class BinarySearchTreeMain {
         System.out.println();
 
         System.out.println("Printing path sum from root to element: " + m + " : " + rootToNodePathSum(bstFromSortedArray, m));
+
+        // duplicate every node and attach it to the left of itself
+        // createAndInsertDuplicateNode(bstFromSortedArray);
+        // printTreeLvlWise(bstFromSortedArray);
+
+        /*
+            LCA of a Binary Tree
+            Lowest Common Ancestor of two nodes A and B
+            Deepest Node which has both A and B as its descendants
+
+            1. If out of the two nodes, only one node is present, return that node
+            2. If both are not present, return null
+         */
+        int n1 = 1;
+        int n2 = 6;
+        System.out.println("LCA of " + n1 + " and " + n2 + " is : " + lcaOfTwoNodesInABinaryTree(binaryTreeRootLvlWise, n1, n2));
+        System.out.println("LCA of " + n1 + " and " + n2 + " is : " + lcaOfTwoNodesInABST(bstFromSortedArray, n1, n2));
+        System.out.println("Height of largest BST: " + heightOfLargestBST(binaryTreeRootLvlWise).heightOfLargestBST);
+        System.out.println("Height of largest BST: " + heightOfLargestBST(bstFromSortedArray).heightOfLargestBST);
+
+        int k3 = 12;
+        List<Pair> pairsWithSumK = pairsWithSumK(binaryTreeRootLvlWise, k3, new HashMap<>());
+        System.out.println("Printing all pairs with sum " + k3 + ":");
+        for(Pair p : pairsWithSumK) System.out.println(p.element1 + " " + p.element2);
+
+        int k4 = 16;
+        printRootToLeafPathsWithSumK(binaryTreeRootLvlWise, k4, "");
+    }
+
+    private static Quadruplet heightOfLargestBST(BinaryTreeNode<Integer> binaryTreeRoot) {
+
+        // base case
+        if(binaryTreeRoot == null) return new Quadruplet(Integer.MAX_VALUE, Integer.MIN_VALUE, true, 0);
+
+        Quadruplet leftQuadruplet = heightOfLargestBST(binaryTreeRoot.leftNode);
+        Quadruplet rightQuadruplet = heightOfLargestBST(binaryTreeRoot.rightNode);
+
+        int overAllMin = Math.min(binaryTreeRoot.data, Math.min(leftQuadruplet.min, rightQuadruplet.min));
+        int overAllMax = Math.max(binaryTreeRoot.data, Math.max(leftQuadruplet.max, rightQuadruplet.max));
+
+        boolean isOverAllTreeBST = leftQuadruplet.isBST && rightQuadruplet.isBST
+                && (leftQuadruplet.max <= binaryTreeRoot.data && binaryTreeRoot.data < rightQuadruplet.min);
+
+        int overAllHeightOfLargestBST = Math.max(leftQuadruplet.heightOfLargestBST, rightQuadruplet.heightOfLargestBST);
+        if(isOverAllTreeBST) overAllHeightOfLargestBST += 1;
+
+        return new Quadruplet(overAllMin, overAllMax, isOverAllTreeBST, overAllHeightOfLargestBST);
+    }
+
+    private static void printRootToLeafPathsWithSumK(BinaryTreeNode<Integer> binaryTreeRootLvlWise, int k, String path) {
+
+        // edge case and base case
+        if(binaryTreeRootLvlWise == null) return;
+
+        // check if it is a leaf node -- base case
+        if(binaryTreeRootLvlWise.leftNode == null && binaryTreeRootLvlWise.rightNode == null){
+            if(k == binaryTreeRootLvlWise.data){
+                System.out.println(path + binaryTreeRootLvlWise.data);
+            }
+            return;
+        }
+
+        // if it is not a leaf node -- call on left and right subtrees
+        printRootToLeafPathsWithSumK(binaryTreeRootLvlWise.leftNode, k - binaryTreeRootLvlWise.data,
+                path + binaryTreeRootLvlWise.data + " ");
+        printRootToLeafPathsWithSumK(binaryTreeRootLvlWise.rightNode, k - binaryTreeRootLvlWise.data,
+                path + binaryTreeRootLvlWise.data + " ");
+    }
+
+    private static List<Pair> pairsWithSumK(BinaryTreeNode<Integer> binaryTreeRootLvlWise, int k, Map<Integer, Integer> hmap) {
+
+        // base case
+        if(binaryTreeRootLvlWise == null || k < 0) return null;
+
+        List<Pair> pairsWithSumK = new ArrayList<>();
+        int complement = k - binaryTreeRootLvlWise.data;
+        if(hmap.containsKey(complement)) {
+
+            for(int i = 0; i < hmap.get(complement); i++) {
+                pairsWithSumK.add(new Pair(binaryTreeRootLvlWise.data, complement));
+            }
+        }
+        if(hmap.containsKey(binaryTreeRootLvlWise.data))
+            hmap.put(binaryTreeRootLvlWise.data, hmap.get(binaryTreeRootLvlWise.data) + 1);
+        else
+            hmap.put(binaryTreeRootLvlWise.data, 1);
+
+        List<Pair> pairsWithSumKLeftSubtree = pairsWithSumK(binaryTreeRootLvlWise.leftNode, k, hmap);
+        if(pairsWithSumKLeftSubtree != null) pairsWithSumK.addAll(pairsWithSumKLeftSubtree);
+
+        List<Pair> pairsWithSumKRightSubtree = pairsWithSumK(binaryTreeRootLvlWise.rightNode, k, hmap);
+        if(pairsWithSumKRightSubtree != null) pairsWithSumK.addAll(pairsWithSumKRightSubtree);
+
+        return pairsWithSumK;
+    }
+
+    private static int lcaOfTwoNodesInABST(BinaryTreeNode<Integer> bstFromSortedArray, int n1, int n2) {
+
+        // base cases
+        if(bstFromSortedArray == null) return -1;
+        if(n1 == bstFromSortedArray.data || n2 == bstFromSortedArray.data) return bstFromSortedArray.data;
+
+        int lcaFromLeftSubtree = -1;
+        int lcaFromRightSubtree = -1;
+        if(n1 < bstFromSortedArray.data && n2 < bstFromSortedArray.data)
+            lcaFromLeftSubtree = lcaOfTwoNodesInABST(bstFromSortedArray.leftNode, n1, n2);
+        else if(n1 > bstFromSortedArray.data && n2 > bstFromSortedArray.data)
+            lcaFromRightSubtree = lcaOfTwoNodesInABST(bstFromSortedArray.rightNode, n1, n2);
+        else {
+            lcaFromLeftSubtree = lcaOfTwoNodesInABST(bstFromSortedArray.leftNode, n1, n2);
+            lcaFromRightSubtree = lcaOfTwoNodesInABST(bstFromSortedArray.rightNode, n1, n2);
+        }
+
+        if(lcaFromLeftSubtree == -1) return lcaFromRightSubtree;
+        if(lcaFromRightSubtree == -1) return lcaFromLeftSubtree;
+        return bstFromSortedArray.data;
+    }
+
+    private static int lcaOfTwoNodesInABinaryTree(BinaryTreeNode<Integer> binaryTreeRootLvlWise, int n1, int n2) {
+
+        // base cases
+        if(binaryTreeRootLvlWise == null) return -1;
+        if(n1 == binaryTreeRootLvlWise.data || n2 == binaryTreeRootLvlWise.data) return binaryTreeRootLvlWise.data;
+
+        int lcaFromLeftSubtree = lcaOfTwoNodesInABinaryTree(binaryTreeRootLvlWise.leftNode, n1, n2);
+        int lcaFromRightSubtree = lcaOfTwoNodesInABinaryTree(binaryTreeRootLvlWise.rightNode, n1, n2);
+
+        if(lcaFromLeftSubtree == -1) return lcaFromRightSubtree;
+        if(lcaFromRightSubtree == -1) return lcaFromLeftSubtree;
+
+        return binaryTreeRootLvlWise.data;
+    }
+
+    private static void createAndInsertDuplicateNode(BinaryTreeNode<Integer> bstFromSortedArray) {
+
+        // base case
+        if(bstFromSortedArray == null) return;
+
+        BinaryTreeNode<Integer> duplicateNode = new BinaryTreeNode<>(bstFromSortedArray.data);
+        duplicateNode.leftNode = bstFromSortedArray.leftNode;
+        bstFromSortedArray.leftNode = duplicateNode;
+
+        createAndInsertDuplicateNode(duplicateNode.leftNode);
+        createAndInsertDuplicateNode(bstFromSortedArray.rightNode);
     }
 
     private static int rootToNodePathSum(BinaryTreeNode<Integer> bstFromSortedArray, int m) {

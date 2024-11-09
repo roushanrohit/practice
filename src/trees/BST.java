@@ -5,7 +5,7 @@ import java.util.Queue;
 
 public class BST {
 
-    BinaryTreeNode<Integer> root;
+    private BinaryTreeNode<Integer> root;
 
     public boolean hasData(int data){
         return hasData(root, data);
