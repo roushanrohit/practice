@@ -23,7 +23,35 @@ public class DPUse {
         int y = 26;
         System.out.println("Minimum squares needed to represent " + y + " : " + countMinimumSquaresDp(y));
 
+        int z = 40;
+        System.out.println("Number of Balanced Binary Trees with height " + z + " : " + noOfBalancedBinaryTreesDp(z));
+    }
 
+    private static BigInteger noOfBalancedBinaryTreesDp(int height) {
+
+        BigInteger[] storage = new BigInteger[height + 1];
+        storage[0] = BigInteger.valueOf(1);
+        storage[1] = BigInteger.valueOf(1);
+
+        for(int i = 2; i <= height; i++){
+            BigInteger x = storage[i - 1];
+            BigInteger y = storage[i - 2];
+
+            storage[i] = (x.multiply(x)).add(x.multiply(y).multiply(BigInteger.valueOf(2)));
+        }
+
+        return storage[height];
+    }
+
+    private static BigInteger noOfBalancedBinaryTrees(int height) {
+
+        // base case
+        if(height == 0 || height == 1) return BigInteger.valueOf(1);
+
+        BigInteger x = noOfBalancedBinaryTrees(height - 1);
+        BigInteger y = noOfBalancedBinaryTrees(height - 2);
+
+        return (x.multiply(x)).add(x.multiply(y).multiply(BigInteger.valueOf(2)));
     }
 
     private static int countMinimumSquaresDp(int y) {
