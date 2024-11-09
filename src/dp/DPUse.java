@@ -20,6 +20,46 @@ public class DPUse {
         int noOfStairs = 10;
         System.out.println("Number of ways to climb the stairs: " + staircaseDp(noOfStairs));
 
+        int y = 26;
+        System.out.println("Minimum squares needed to represent " + y + " : " + countMinimumSquaresDp(y));
+
+
+    }
+
+    private static int countMinimumSquaresDp(int y) {
+
+        int[] storage = new int[y + 1];
+        for(int i = 1; i <= y; i++) {
+            storage[i] = i;
+        }
+
+        for(int i = 2; i <= y; i++){
+            for(int j = 1; j <= Math.sqrt(i); j++){
+
+                int temp = 1 + storage[i - (j * j)];
+                if(temp < storage[i]){
+                    storage[i] = temp;
+                }
+            }
+        }
+
+        return storage[y];
+    }
+
+    private static int countMinimumSquares(int y) {
+
+        // base case
+        if(y <= 1) return y;
+
+        int minimum = y;
+        for(int i = 1; i <= Math.sqrt(y); i++){
+            int temp = 1 + countMinimumSquares(y - (i * i));
+            if(temp < minimum){
+                minimum = temp;
+            }
+        }
+
+        return minimum;
     }
 
     private static int staircaseDp(int n) {
